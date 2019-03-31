@@ -17,6 +17,9 @@ export default Vue.extend({
   components: {
     HelloWorld
   },
+  created() {
+    console.log('home created, name:', this.$options.name)
+  },
   methods: {
     login() {
       authService.login({})

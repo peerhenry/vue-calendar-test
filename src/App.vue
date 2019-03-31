@@ -8,6 +8,21 @@
   </div>
 </template>
 
+<script lang="ts">
+import Vue from 'vue'
+import authService from '@/authService'
+
+export default Vue.extend({
+  async created() {
+    try {
+      await authService.renewTokens()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+})
+</script>
+
 <style lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

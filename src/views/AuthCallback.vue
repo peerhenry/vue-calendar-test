@@ -17,10 +17,13 @@ export default Vue.extend({
       token: ''
     }
   },
-  mounted() {
+  created() {
     authService.handleAuthentication().then((s: string) => {
       this.success = true
       this.token = s
+      setTimeout(() => {
+        this.$router.push('/')
+      }, 1500)
     })
   }
 })

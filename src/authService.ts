@@ -7,7 +7,7 @@ const loginEvent = 'loginEvent'
 const webAuth = new auth0.WebAuth({
   domain: 'dev-nkguxt77.eu.auth0.com',
   // redirectUri: `${window.location.origin}`,
-  redirectUri: 'http://localhost:8080',
+  redirectUri: 'http://localhost:8080/authcallback',
   clientID: 'xu2LCVsGrM7lEpTBy9W0b_Q9T3ELeeLl',
   responseType: 'id_token',
   scope: 'openid profile email'
@@ -50,6 +50,8 @@ class AuthService extends EventEmitter {
     console.log('localLogin') // DEBUG
     this.idToken = authResult.idToken
     this.profile = authResult.idTokenPayload
+    console.log('idToken', this.idToken) // DEBUG
+    console.log('profile', this.profile) // DEBUG
 
     // Convert the JWT expiry time from seconds to milliseconds
     if (this.profile === null) {
@@ -64,6 +66,23 @@ class AuthService extends EventEmitter {
       loggedIn: true,
       profile: authResult.idTokenPayload,
       state: authResult.appState || {}
+    })
+  }
+
+  renewTokens() {
+    return new Promise((resolve, reject) => {
+      if (localStorage.getItem(localStorageKey) !== 'true') {
+        return reject('Not logged in')
+      }
+
+      webAuth.checkSession({}, (err, authResult) => {
+        if (err) {
+          reject(err)
+        } else {
+          this.localLogin(authResult)
+          resolve(authResult)
+        }
+      })
     })
   }
 
